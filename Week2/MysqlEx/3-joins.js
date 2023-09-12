@@ -1,52 +1,10 @@
-const mysql = require("mysql");
-
-const dbConfig = {
-  host: "localhost",
-  user: "hyfuser",
-  password: "hyfpassword",
-  database: "week2",
-};
-
-const connection = mysql.createConnection(dbConfig);
-
-// Connect to the MySQL server
-connection.connect((error) => {
-  if (error) {
-    console.error("Error connecting to the database:", error);
-    connection.end(); // Close the connection
-    return;
-  }
-
-  useDatabase();
-  // execute queries
-  executeQueries(queries);
-  // close connection
-  connection.end();
-});
-
-const useDatabase = () => {
-  connection.query("USE week2", (error) => {
-    if (error) {
-      console.error("Error using database:", error);
-    } else {
-      console.log("Using w2 database.");
-    }
-  });
-};
-
-const executeQueries = (queries) => {
-  for (let query of queries) {
-    connection.query(query, (error, results) => {
-      console.log(results);
-      if (error) {
-        console.log(`Error execution of ${query}`, error);
-      } else {
-        console.log(`query executed: ${query}.`);
-      }
-    });
-  }
-};
-
+const { createConnection, executeQueries } = require("../../mysqlHelpers");
+const connection = createConnection(
+  "localhost",
+  "hyfuser",
+  "hyfpassword",
+  "week"
+);
 const queries = [
   `
         SELECT
@@ -70,3 +28,5 @@ const queries = [
 
         `,
 ];
+
+executeQueries(connection, queries);

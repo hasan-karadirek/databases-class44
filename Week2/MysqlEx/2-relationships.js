@@ -1,51 +1,11 @@
-const mysql = require("mysql");
+const { createConnection, executeQueries } = require("../../mysqlHelpers");
 
-const dbConfig = {
-  host: "localhost",
-  user: "hyfuser",
-  password: "hyfpassword",
-  database: "week2",
-};
-
-const connection = mysql.createConnection(dbConfig);
-
-// Connect to the MySQL server
-connection.connect((error) => {
-  if (error) {
-    console.error("Error connecting to the database:", error);
-    connection.end(); // Close the connection
-    return;
-  }
-
-  useDatabase();
-  // execute queries
-  executeQueries(queries);
-  // close connection
-  connection.end();
-});
-
-const useDatabase = () => {
-  connection.query("USE week2", (error) => {
-    if (error) {
-      console.error("Error using database:", error);
-    } else {
-      console.log("Using w2 database.");
-    }
-  });
-};
-
-const executeQueries = (queries) => {
-  for (let query of queries) {
-    connection.query(query, (error, results) => {
-      console.log(results);
-      if (error) {
-        console.log(`Error execution of ${query}`, error);
-      } else {
-        console.log(`query executed: ${query}.`);
-      }
-    });
-  }
-};
+const connection = createConnection(
+  "localhost",
+  "hyfuser",
+  "hyfpassword",
+  "week2"
+);
 
 const queries = [
   `
@@ -121,13 +81,16 @@ VALUES
   ('Olivia Harris', 'University E', '1991-09-05', 15, 'Female', 4);
     `,
   `
-    INSERT INTO AuthorResearchPapers (author_id, paper_id)
-    VALUES
-    (8, 26), (12, 15), (11, 12), (6, 28), (15, 9),
-    (2, 3), (13, 11), (7, 7), (4, 22), (9, 17),
-    (3, 8), (5, 25), (14, 21), (1, 6), (10, 30),
-    (13, 24), (15, 16), (6, 29), (11, 5), (12, 18),
-    (8, 2), (7, 10), (2, 27), (9, 1), (4, 20),
-    (3, 23), (5, 14), (1, 13), (10, 19), (14, 4)
+  INSERT INTO AuthorResearchPapers (author_id, paper_id)
+  VALUES
+  (8, 26), (12, 26), (12, 15), (11, 12), (6, 28), (15, 9),
+  (2, 3), (13, 11), (7, 7), (4, 22), (9, 17),
+  (3, 8), (5, 25), (14, 21), (1, 6), (10, 30),
+  (13, 24), (15, 16), (6, 29), (11, 5), (12, 18),
+  (8, 2), (7, 10), (2, 27), (9, 1), (4, 20),
+  (3, 23), (5, 14), (1, 13), (10, 19), (14, 4),
+  (5, 27), (1, 17), (8, 10), (11, 21), (4, 9);  
     `,
 ];
+
+executeQueries(connection, queries);
