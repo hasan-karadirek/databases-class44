@@ -21,8 +21,6 @@ async function getTotalPopulationByCountryAndYear(year, country) {
       },
       {
         $addFields: {
-          M: { $toInt: "$M" },
-          F: { $toInt: "$F" },
           TotalPopulation: { $add: ["$M", "$F"] },
         },
       },

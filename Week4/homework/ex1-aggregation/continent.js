@@ -14,20 +14,19 @@ async function getContinentInformationByYearAndAge(year, age) {
     const pipeline = [
       {
         $match: {
-          Year: 2020,
-          Age: "100+",
+          Year: year,
+          Age: age,
         },
       },
       {
         $addFields: {
-          M: { $toInt: "$M" },
-          F: { $toInt: "$F" },
           TotalPopulation: { $add: ["$M", "$F"] },
         },
       },
       {
         $group: {
-          _id: "$Country",
+          _id: "$_id",
+          Country: { $first: "$Country" },
           Year: { $first: "$Year" },
           Age: { $first: "$Age" },
           M: { $sum: "$M" },
@@ -37,14 +36,11 @@ async function getContinentInformationByYearAndAge(year, age) {
       },
     ];
 
-    console.log("Pipeline:", JSON.stringify(pipeline, null, 2));
-
     const result = await collection.aggregate(pipeline).toArray();
-    console.log("Result:", JSON.stringify(result, null, 2));
 
     return result.map((item) => ({
-      _id: new ObjectId(),
-      Country: item._id,
+      _id: item._id,
+      Country: item.Country,
       Year: item.Year,
       Age: item.Age,
       M: item.M,

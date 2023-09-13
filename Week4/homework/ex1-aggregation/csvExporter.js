@@ -24,6 +24,9 @@ async function importData() {
     const dataArr = [];
 
     stream.on("data", (row) => {
+      row.Year = parseInt(row.Year);
+      row.M = parseInt(row.M);
+      row.F = parseInt(row.F);
       dataArr.push(row);
     });
 
