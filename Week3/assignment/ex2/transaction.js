@@ -2,27 +2,31 @@ const {
   createConnection,
   executeTransactions,
 } = require("../../../mysqlHelpers.js");
-const connection = createConnection(
-  "localhost",
-  "hyfuser",
-  "hyfpassword",
-  "transactions"
-);
+const transferMoney = (transferFrom, transferTo, amount) => {
+  const connection = createConnection(
+    "localhost",
+    "hyfuser",
+    "hyfpassword",
+    "transactions"
+  );
 
-const queries = [
-  `
+  const queries = [
+    `
       UPDATE account
-      SET balance = balance - 1000
-      WHERE account_number = 101
+      SET balance = balance - ${amount}
+      WHERE account_number = ${transferFrom}
     `,
-  `UPDATE account
-        SET balance = balance + 1000
-        WHERE account_number = 102
+    `UPDATE account
+        SET balance = balance + ${amount}
+        WHERE account_number = ${transferTo}
     `,
-  `INSERT INTO account_change (account_number, amount, remark)
+    `INSERT INTO account_change (account_number, amount, remark)
     VALUES
-    (101, -1000, 'Transfer to account 102'),
-    (102, 1000, 'Transfer from account 101')
+    (${transferFrom}, -${amount}, 'Transfer to account ${transferTo}'),
+    (${transferTo}, ${amount}, 'Transfer from account ${transferFrom}')
     `,
-];
-executeTransactions(connection, queries);
+  ];
+  executeTransactions(connection, queries);
+};
+
+transferMoney(101, 102, 1000);
