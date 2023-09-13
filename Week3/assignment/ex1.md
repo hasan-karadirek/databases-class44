@@ -1,9 +1,6 @@
 Exercise 1: 
-1- 
-    "member_address" column violates 1NF by the rule =>  Single valued columns 
-    "dinner_date" column violates 1NF by the rule =>Column domain (for any column) should not change.
-    There is no unique names for columns
-    There are duplicate records and rows do not have a primary key.
+1- member_address, food_code, and food_description (non-atomic or composite values) and dinner_date (inconsistent data type).
+    
 2-
 Member:member_id, member_name, member_address
 
