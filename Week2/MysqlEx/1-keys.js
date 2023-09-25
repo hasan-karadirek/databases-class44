@@ -4,7 +4,7 @@ const connection = createConnection(
   "localhost",
   "hyfuser",
   "hyfpassword",
-  "new_world"
+  "week2"
 );
 
 const queries = [
