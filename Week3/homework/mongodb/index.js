@@ -59,16 +59,16 @@ async function findEpisodesExercises(client) {
     console.log(
       `The season and episode number of the "BLACK RIVER" episode is ${blackRiver.episode}`
     );
-    const cursorCliff = bobRossCollection.find({ elements: "CLIFF" });
-    let cliffEpisodes = [];
-    for await (const episode of cursorCliff) {
-      cliffEpisodes.push(episode.title);
-    }
+    const cursorCliff = await bobRossCollection
+      .find({ elements: "CLIFF" })
+      .toArray();
 
     // Find all of the episode titles where Bob Ross painted a CLIFF [Should be: NIGHT LIGHT, EVENING SEASCAPE, SURF'S UP, CLIFFSIDE, BY THE SEA, DEEP WILDERNESS HOME, CRIMSON TIDE, GRACEFUL WATERFALL]
 
     console.log(
-      `The episodes that Bob Ross painted a CLIFF are ${cliffEpisodes}`
+      `The episodes that Bob Ross painted a CLIFF are ${cursorCliff.map(
+        (episode) => episode.title
+      )}`
     );
 
     // Find all of the episode titles where Bob Ross painted a CLIFF and a LIGHTHOUSE [Should be: NIGHT LIGHT]
@@ -114,20 +114,14 @@ async function updateEpisodeExercises(client) {
     // Unfortunately we made a mistake in the arrays and the element type called 'BUSHES' should actually be 'BUSH' as sometimes only one bush was painted.
     // Update all of the documents in the collection that have `BUSHES` in the elements array to now have `BUSH`
     // It should update 120 episodes!
-    let updatedEpisodesCount = 0;
-    const episodes = bobRossCollection.find({ elements: "BUSHES" });
-    for await (const episode of episodes) {
-      const index = episode.elements.indexOf("BUSHES");
-      episode.elements[index] = "BUSH";
-      await bobRossCollection.updateOne(
-        { _id: episode._id },
-        { $set: episode }
-      );
-      updatedEpisodesCount++;
-    }
+
+    const bushesResult = await bobRossCollection.updateMany(
+      { elements: "BUSHES" },
+      { $set: { "elements.$": "BUSH" } }
+    );
 
     console.log(
-      `Ran a command to update all the BUSHES to BUSH and it updated ${updatedEpisodesCount} episodes`
+      `Ran a command to update all the BUSHES to BUSH and it updated ${bushesResult.modifiedCount} episodes`
     );
   } catch (error) {
     throw error;
