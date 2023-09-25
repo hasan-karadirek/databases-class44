@@ -10,10 +10,19 @@ async function getContinentInformationByYearAndAge(year, age) {
 
     const db = client.db("databaseweek4");
     const collection = db.collection("population");
+    const continentNames = [
+      "AFRICA",
+      "ASIA",
+      "EUROPE",
+      "LATIN AMERICA AND THE CARIBBEAN",
+      "NORTHERN AMERICA",
+      "OCEANIA",
+    ];
 
     const pipeline = [
       {
         $match: {
+          Country: { $in: continentNames },
           Year: year,
           Age: age,
         },
@@ -23,30 +32,9 @@ async function getContinentInformationByYearAndAge(year, age) {
           TotalPopulation: { $add: ["$M", "$F"] },
         },
       },
-      {
-        $group: {
-          _id: "$_id",
-          Country: { $first: "$Country" },
-          Year: { $first: "$Year" },
-          Age: { $first: "$Age" },
-          M: { $sum: "$M" },
-          F: { $sum: "$F" },
-          TotalPopulation: { $sum: "$TotalPopulation" },
-        },
-      },
     ];
 
-    const result = await collection.aggregate(pipeline).toArray();
-
-    return result.map((item) => ({
-      _id: item._id,
-      Country: item.Country,
-      Year: item.Year,
-      Age: item.Age,
-      M: item.M,
-      F: item.F,
-      TotalPopulation: item.TotalPopulation,
-    }));
+    return await collection.aggregate(pipeline).toArray();
   } catch (err) {
     console.error("Error:", err);
   } finally {

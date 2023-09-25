@@ -15,14 +15,24 @@ async function setupDb() {
       account_number: 101,
       balance: 5000.0,
       account_changes: [
-        { change_number: 1, amount: 5000.0, remark: "Initial deposit" },
+        {
+          change_number: 1,
+          amount: 5000.0,
+          changed_date: new Date(),
+          remark: "Initial deposit",
+        },
       ],
     },
     {
       account_number: 102,
       balance: 3000.0,
       account_changes: [
-        { change_number: 1, amount: 3000.0, remark: "Initial deposit" },
+        {
+          change_number: 1,
+          amount: 3000.0,
+          changed_date: new Date(),
+          remark: "Initial deposit",
+        },
       ],
     },
   ];
